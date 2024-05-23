@@ -12,6 +12,9 @@ import (
 )
 
 type Item struct {
+	DataPos80          []byte
+	Data12             []byte
+	Data15             []byte
 	Name               string
 	TexturePath        string
 	ExtraFilePath      string
@@ -26,6 +29,7 @@ type Item struct {
 	StrData11          string
 	StrData15          string
 	StrData16          string
+	ExtraFileHash      int32
 	ItemID             int32
 	TextureHash        int32
 	Val1               int32
@@ -33,11 +37,19 @@ type Item struct {
 	ExtrafileHash      int32
 	AudioVolume        int32
 	WeatherID          int32
-	SeedColor          int32
-	SeedOverlayColor   int32
+	SeedColorA         int8
+	SeedColorR         int8
+	SeedColorG         int8
+	SeedColorB         int8
+	SeedOverlayColorA  int8
+	SeedOverlayColorR  int8
+	SeedOverlayColorG  int8
+	SeedOverlayColorB  int8
 	GrowTime           int32
 	IntData13          int32
 	IntData14          int32
+	IntData17          int32
+	IntData18          int32
 	Rarity             int16
 	Val2               int16
 	IsRayman           int16
@@ -213,7 +225,10 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 2
 			itemInfo.Items[i].ExtraFilePath = string(data[memPos : memPos+strLen])
 			memPos += strLen
-			memPos += 8
+			itemInfo.Items[i].ExtraFileHash = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
+			memPos += 4
+			itemInfo.Items[i].AudioVolume = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
+			memPos += 4
 			strLen = int(binary.LittleEndian.Uint16(data[memPos:]))
 			memPos += 2
 			itemInfo.Items[i].PetName = string(data[memPos : memPos+strLen])
@@ -238,10 +253,23 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 1
 			itemInfo.Items[i].TreeLeaves = int8(data[memPos])
 			memPos += 1
-			itemInfo.Items[i].SeedColor = int32(binary.LittleEndian.Uint32(data[memPos:]))
+			itemInfo.Items[i].SeedColorA = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedColorR = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedColorG = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedColorB = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedOverlayColorA = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedOverlayColorR = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedOverlayColorG = int8(data[memPos])
+			memPos += 1
+			itemInfo.Items[i].SeedOverlayColorB = int8(data[memPos])
+			memPos += 1
 			memPos += 4
-			itemInfo.Items[i].SeedOverlayColor = int32(binary.LittleEndian.Uint32(data[memPos:]))
-			memPos += 8
 			itemInfo.Items[i].GrowTime = int32(binary.LittleEndian.Uint32(data[memPos:]))
 			memPos += 4
 			itemInfo.Items[i].Val2 = int16(binary.LittleEndian.Uint16(data[memPos:]))
@@ -250,7 +278,7 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 2
 			strLen = int(binary.LittleEndian.Uint16(data[memPos:]))
 			memPos += 2
-			itemInfo.Items[i].ExtraOptions = string(data[memPos : memPos+int(strLen)])
+			itemInfo.Items[i].ExtraOptions = string(data[memPos : memPos+strLen])
 			memPos += strLen
 
 			strLen = int(binary.LittleEndian.Uint16(data[memPos:]))
@@ -261,6 +289,7 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 2
 			itemInfo.Items[i].ExtraOptions2 = string(data[memPos : memPos+strLen])
 			memPos += strLen
+			itemInfo.Items[i].DataPos80 = data[memPos : memPos+80]
 			memPos += 80
 			if itemInfo.ItemVersion >= 11 {
 				strLen := int(binary.LittleEndian.Uint16(data[memPos:]))
@@ -269,30 +298,38 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 				memPos += strLen
 			}
 			if itemInfo.ItemVersion >= 12 {
+				itemInfo.Items[i].Data12 = data[memPos : memPos+13]
 				memPos += 13
 			}
 			if itemInfo.ItemVersion >= 13 {
+				itemInfo.Items[i].IntData13 = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
 				memPos += 4
 			}
 			if itemInfo.ItemVersion >= 14 {
+				itemInfo.Items[i].IntData14 = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
 				memPos += 4
 			}
 			if itemInfo.ItemVersion >= 15 {
+				itemInfo.Items[i].Data15 = data[memPos : memPos+25]
 				memPos += 25
 				strLen := int(binary.LittleEndian.Uint16(data[memPos:]))
-				memPos += 2 + strLen
+				memPos += 2
+				itemInfo.Items[i].StrData15 = string(data[memPos : memPos+strLen])
+				memPos += strLen
 			}
 			if itemInfo.ItemVersion >= 16 {
-				jLen := int(binary.LittleEndian.Uint16(data[memPos:]))
-				memPos += 2 + jLen
+				strLen := int(binary.LittleEndian.Uint16(data[memPos:]))
+				memPos += 2
+				itemInfo.Items[i].StrData16 = string(data[memPos : memPos+strLen])
+				memPos += strLen
 			}
 			if itemInfo.ItemVersion >= 17 {
-				jLen := int(binary.LittleEndian.Uint16(data[memPos:]))
-				memPos += 4 + jLen
+				itemInfo.Items[i].IntData17 = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
+				memPos += 4
 			}
 			if itemInfo.ItemVersion >= 18 {
-				jLen := int(binary.LittleEndian.Uint16(data[memPos:]))
-				memPos += 4 + jLen
+				itemInfo.Items[i].IntData18 = int32(binary.LittleEndian.Uint32(data[memPos : memPos+4]))
+				memPos += 4
 			}
 
 		} else {
@@ -428,10 +465,10 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 			return fmt.Errorf("error writing extra file path: %v", err)
 		}
 
-		// Padding bytes
-		if _, err := buffer.Write(make([]byte, 8)); err != nil {
+		/* Padding bytes
+		if _, err := buffer.Write(make([]byte, )); err != nil {
 			return fmt.Errorf("error writing padding bytes: %v", err)
-		}
+		}*/
 
 		// Encode PetName
 		petNameLength := uint16(len(item.PetName))
@@ -490,12 +527,22 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 			return fmt.Errorf("error writing TreeLeaves: %v", err)
 		}
 
-		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColor); err != nil {
-			return fmt.Errorf("error writing SeedColor: %v", err)
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColorA); err != nil {
+			return fmt.Errorf("error writing SeedColorA: %v", err)
 		}
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorR)
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorG)
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorB)
 
-		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColor); err != nil {
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColorA); err != nil {
 			return fmt.Errorf("error writing SeedOverlayColor: %v", err)
+		}
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorR)
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorG)
+		binary.Write(buffer, binary.LittleEndian, item.SeedColorB)
+
+		if _, err := buffer.Write(make([]byte, 4)); err != nil {
+			return fmt.Errorf("error writing padding bytes: %v", err)
 		}
 
 		if err := binary.Write(buffer, binary.LittleEndian, item.GrowTime); err != nil {
@@ -555,22 +602,22 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 			}
 		}
 		if itemInfo.ItemVersion >= 12 {
-			if _, err := buffer.Write(make([]byte, 13)); err != nil {
+			if _, err := buffer.Write(item.Data12); err != nil {
 				return fmt.Errorf("error writing version 12 specific bytes: %v", err)
 			}
 		}
 		if itemInfo.ItemVersion >= 13 {
-			if _, err := buffer.Write(make([]byte, 4)); err != nil {
+			if err := binary.Write(buffer, binary.LittleEndian, item.IntData13); err != nil {
 				return fmt.Errorf("error writing version 13 specific bytes: %v", err)
 			}
 		}
 		if itemInfo.ItemVersion >= 14 {
-			if _, err := buffer.Write(make([]byte, 4)); err != nil {
+			if err := binary.Write(buffer, binary.LittleEndian, item.IntData14); err != nil {
 				return fmt.Errorf("error writing version 14 specific bytes: %v", err)
 			}
 		}
 		if itemInfo.ItemVersion >= 15 {
-			if _, err := buffer.Write(make([]byte, 25)); err != nil {
+			if _, err := buffer.Write(item.Data15); err != nil {
 				return fmt.Errorf("error writing version 15 specific bytes: %v", err)
 			}
 			strLen := uint16(len(item.StrData15))
@@ -582,8 +629,8 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 			}
 		}
 		if itemInfo.ItemVersion >= 16 {
-			jLen := uint16(len(item.StrData16))
-			if err := binary.Write(buffer, binary.LittleEndian, jLen); err != nil {
+			strLen := uint16(len(item.StrData16))
+			if err := binary.Write(buffer, binary.LittleEndian, strLen); err != nil {
 				return fmt.Errorf("error writing strData16 length: %v", err)
 			}
 			if _, err := buffer.Write([]byte(item.StrData16)); err != nil {
@@ -591,21 +638,13 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 			}
 		}
 		if itemInfo.ItemVersion >= 17 {
-			jLen := uint16(len(item.StrData11))
-			if err := binary.Write(buffer, binary.LittleEndian, jLen); err != nil {
-				return fmt.Errorf("error writing strData11 length: %v", err)
-			}
-			if _, err := buffer.Write([]byte(item.StrData11)); err != nil {
-				return fmt.Errorf("error writing strData11: %v", err)
+			if err := binary.Write(buffer, binary.LittleEndian, item.IntData17); err != nil {
+				return fmt.Errorf("error writing strData17: %v", err)
 			}
 		}
 		if itemInfo.ItemVersion >= 18 {
-			jLen := uint16(len(item.StrData11))
-			if err := binary.Write(buffer, binary.LittleEndian, jLen); err != nil {
-				return fmt.Errorf("error writing strData11 length: %v", err)
-			}
-			if _, err := buffer.Write([]byte(item.StrData11)); err != nil {
-				return fmt.Errorf("error writing strData11: %v", err)
+			if err := binary.Write(buffer, binary.LittleEndian, item.IntData18); err != nil {
+				return fmt.Errorf("error writing strData18: %v", err)
 			}
 		}
 	}
