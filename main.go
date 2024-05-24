@@ -6,6 +6,7 @@ import (
 	"github.com/eikarna/GoDat/Components/Decoder"
 	"github.com/eikarna/GoDat/Components/Encoder"
 	. "github.com/eikarna/GoDat/Components/Enums"
+	"github.com/eikarna/GoDat/Components/ProtonHash"
 	"github.com/eikarna/GoDat/Components/UI"
 	"github.com/goccy/go-json"
 	"io/ioutil"
@@ -19,8 +20,8 @@ func main() {
 	fmt.Println("Please select Method (ex. 1, or \"Decode\"):")
 	fmt.Println("1. Decode")
 	fmt.Println("2. Encode")
-	fmt.Println("3. Search Items with Name/ID")
-	fmt.Println("2. Encode")
+	fmt.Println("3. Search Items (Name/ID)")
+	fmt.Println("4. ProtonHash")
 	method, err := UI.Read(false, "> ")
 	if err != nil {
 		log.Error(err.Error())
@@ -69,6 +70,16 @@ func main() {
 			log.Error("Error ketika mencoba encode \"items.dat\": %v", err)
 			return
 		}
+	} else if method == "3" || strings.Contains(strings.ToLower(method), "search items") {
+		log.Warn("This Feature will added Soon!")
+		return
+	} else if method == "4" || strings.Contains(strings.ToLower(method), "protonhash") {
+		targetFile, err := UI.Read(false, "Target File: ")
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
+		fmt.Printf("ProtonHash: %d\n", ProtonHash.GetFileHash(targetFile))
 	} else {
 		log.Fatal("Please input Correctly!")
 		return
