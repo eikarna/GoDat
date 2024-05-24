@@ -211,16 +211,32 @@ func Encode(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColorA); err != nil {
 			return fmt.Errorf("error writing SeedColorA: %v", err)
 		}
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorR)
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorG)
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorB)
+
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColorR); err != nil {
+			return fmt.Errorf("error writing SeedColorR: %v", err)
+		}
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColorG); err != nil {
+			return fmt.Errorf("error writing SeedColorG: %v", err)
+		}
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedColorB); err != nil {
+			return fmt.Errorf("error writing SeedColorB: %v", err)
+		}
 
 		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColorA); err != nil {
-			return fmt.Errorf("error writing SeedOverlayColor: %v", err)
+			return fmt.Errorf("error writing SeedOverlayColorA: %v", err)
 		}
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorR)
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorG)
-		binary.Write(buffer, binary.LittleEndian, item.SeedColorB)
+
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColorR); err != nil {
+			return fmt.Errorf("error writing SeedOverlayColorR: %v", err)
+		}
+
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColorG); err != nil {
+			return fmt.Errorf("error writing SeedOverlayColorG: %v", err)
+		}
+
+		if err := binary.Write(buffer, binary.LittleEndian, item.SeedOverlayColorB); err != nil {
+			return fmt.Errorf("error writing SeedOverlayColorB: %v", err)
+		}
 
 		if _, err := buffer.Write(make([]byte, 4)); err != nil {
 			return fmt.Errorf("error writing padding bytes: %v", err)
@@ -268,7 +284,7 @@ func Encode(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 		}
 
 		// Padding bytes (80 bytes)
-		if _, err := buffer.Write(make([]byte, 80)); err != nil {
+		if _, err := buffer.Write([]byte(item.DataPos80)); err != nil {
 			return fmt.Errorf("error writing padding bytes: %v", err)
 		}
 
