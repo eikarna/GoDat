@@ -55,7 +55,7 @@ type Item struct {
 	IsRayman           int16
 	EditableType       int8
 	ItemCategory       int8
-	ActionType         int16
+	ActionType         int8
 	HitsoundType       int8
 	ItemKind           int8
 	TextureX           int8
@@ -180,7 +180,7 @@ func DecodeItemsDat(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 1
 			itemInfo.Items[i].ItemCategory = int8(data[memPos])
 			memPos += 1
-			itemInfo.Items[i].ActionType = int16(data[memPos])
+			itemInfo.Items[i].ActionType = int8(data[memPos])
 			memPos += 1
 			itemInfo.Items[i].HitsoundType = int8(data[memPos])
 			memPos += 1
@@ -372,6 +372,7 @@ func EncodeItemsDat(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 		}
 
 		if err := binary.Write(buffer, binary.LittleEndian, item.ActionType); err != nil {
+			// if err := buffer.WriteByte(byte(item.ActionType)); err != nil {
 			return fmt.Errorf("error writing ActionType: %v", err)
 		}
 
