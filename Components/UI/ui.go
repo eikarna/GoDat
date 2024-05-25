@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 )
 
@@ -60,4 +62,33 @@ func Read(multiLineHead bool, headLines ...interface{}) (string, error) {
 		}
 	}
 	return "", errors.New("Please input correctly!")
+}
+
+func ClearScreen() error {
+	var clearFunc func()
+
+	switch runtime.GOOS {
+	case "linux":
+		clearFunc = func() {
+			cmd := exec.Command("clear")
+			cmd.Stdout = os.Stdout
+			cmd.Run()
+		}
+	case "android":
+		clearFunc = func() {
+			cmd := exec.Command("clear")
+			cmd.Stdout = os.Stdout
+			cmd.Run()
+		}
+	case "windows":
+		clearFunc = func() {
+			cmd := exec.Command("cmd", "/c", "cls")
+			cmd.Stdout = os.Stdout
+			cmd.Run()
+		}
+	default:
+		return errors.New("Your platform is unsupported! I can't clear terminal screen :(")
+	}
+	clearFunc()
+	return nil
 }

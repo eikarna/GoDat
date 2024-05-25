@@ -211,7 +211,7 @@ func Decode(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			break
 		}
 	}
-
+	data, err = nil, nil
 	fmt.Printf("Items.dat decoded for %s. With Item Count: %d, ItemsDatVersion: %d, Item Hash: %v\n", time.Since(timestamp), itemInfo.ItemCount, itemInfo.ItemVersion, itemInfo.FileHash)
 	return itemInfo, nil
 }

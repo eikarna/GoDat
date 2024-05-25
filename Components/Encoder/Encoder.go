@@ -351,12 +351,13 @@ func Encode(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 	if err != nil {
 		return fmt.Errorf("error creating output file: %v", err)
 	}
-	defer outputFile.Close()
 
 	if _, err := buffer.WriteTo(outputFile); err != nil {
 		return fmt.Errorf("error writing to output file: %v", err)
 	}
-	fmt.Printf("items.dat successfully encoded for %s\n", time.Since(now))
 
+	outputFile.Close()
+	itemInfo, buffer, err = nil, nil, nil
+	fmt.Printf("items.dat successfully encoded for %s\n", time.Since(now))
 	return nil
 }

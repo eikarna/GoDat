@@ -69,13 +69,13 @@ type ItemInfo struct {
 
 	//items.dat packet
 	FileSize int32
-	FileHash uint32
+	FileHash int32
 }
 
 const (
 	key = "PBG892FXX982ABC*"
 )
 
-func (Info *ItemInfo) GetItemHash() uint32 {
-	return uint32(Info.FileHash)
+func (Info *ItemInfo) GetItemHash() int32 {
+	return int32(Info.FileHash)
 }
