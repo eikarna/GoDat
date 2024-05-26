@@ -22,7 +22,10 @@ go.work
 
 # Others
 items.*
-
 *.dat
-
 backup/
+cache/
+*.mp3
+*.ogg
+*.zip
+*.json
