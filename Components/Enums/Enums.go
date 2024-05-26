@@ -23,7 +23,6 @@ type Item struct {
 	TextureHash        int32
 	Val1               int32
 	DropChance         int32
-	ExtrafileHash      int32
 	AudioVolume        int32
 	WeatherID          int32
 	SeedColorA         int8
@@ -44,7 +43,7 @@ type Item struct {
 	IsRayman           int16
 	EditableType       int8
 	ItemCategory       int8
-	ActionType         int8
+	ActionType         uint8
 	HitsoundType       int8
 	ItemKind           int8
 	TextureX           int8

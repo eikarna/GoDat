@@ -55,7 +55,7 @@ func Decode(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 			memPos += 1
 			itemInfo.Items[i].ItemCategory = int8(data[memPos])
 			memPos += 1
-			itemInfo.Items[i].ActionType = int8(data[memPos])
+			itemInfo.Items[i].ActionType = uint8(data[memPos])
 			memPos += 1
 			itemInfo.Items[i].HitsoundType = int8(data[memPos])
 			memPos += 1
@@ -214,4 +214,38 @@ func Decode(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 	data, err = nil, nil
 	fmt.Printf("Items.dat decoded for %s. With Item Count: %d, ItemsDatVersion: %d, Item Hash: %v\n", time.Since(timestamp), itemInfo.ItemCount, itemInfo.ItemVersion, itemInfo.FileHash)
 	return itemInfo, nil
+}
+
+func FileBuffer(pathFile string) ([]byte, error) {
+	if pathFile == "" {
+		return nil, errors.New("Please provide the target file!")
+	}
+	file, err := os.Open(pathFile)
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %v", err)
+	}
+	defer file.Close()
+
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return nil, fmt.Errorf("error getting file information: %v", err)
+	}
+
+	size := fileInfo.Size()
+	if size == -1 {
+		return nil, fmt.Errorf("error: File size is -1")
+	}
+	data := make([]byte, size)
+	_, err = file.Read(data)
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %v", err)
+	}
+	FileBufferPacket := make([]byte, 60+size)
+	binary.LittleEndian.PutUint32(FileBufferPacket[0:], 4)
+	binary.LittleEndian.PutUint32(FileBufferPacket[4:], 16)
+	binary.LittleEndian.PutUint32(FileBufferPacket[8:], ^uint32(0))
+	binary.LittleEndian.PutUint32(FileBufferPacket[16:], 8)
+	binary.LittleEndian.PutUint32(FileBufferPacket[56:], uint32(size))
+	copy(FileBufferPacket[60:], data)
+	return FileBufferPacket, nil
 }
