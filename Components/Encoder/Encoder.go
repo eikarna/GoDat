@@ -7,10 +7,9 @@ import (
 	"fmt"
 	. "github.com/eikarna/GoDat/Components/Enums"
 	"os"
-	"time"
 )
 
-func Encode(itemInfo *ItemInfo, pathFile string, now time.Time) error {
+func Encode(itemInfo *ItemInfo, pathFile string) error {
 	if itemInfo == nil {
 		return errors.New("Please provide the items data to be encoded!")
 	}
@@ -358,6 +357,6 @@ func Encode(itemInfo *ItemInfo, pathFile string, now time.Time) error {
 
 	outputFile.Close()
 	itemInfo, buffer, err = nil, nil, nil
-	fmt.Printf("items.dat successfully encoded for %s\n", time.Since(now))
+	// fmt.Printf("items.dat successfully encoded for %s\n", time.Since(now))
 	return nil
 }

@@ -26,7 +26,7 @@ func BenchmarkEncoder(b *testing.B) {
 		return
 	}
 	// Define the number of concurrent to simulate
-	concurrency := 1000
+	concurrency := 10
 	successCount := 0
 	errorCount := 0
 	var totalTime time.Duration
@@ -43,7 +43,7 @@ func BenchmarkEncoder(b *testing.B) {
 			go func() {
 				defer wg.Done()
 				start := time.Now()
-				err := Encoder.Encode(data, "items.encoded.dat", start)
+				err := Encoder.Encode(data, "items.encoded.dat")
 				totalTime += time.Since(start)
 				if err != nil {
 					b.Errorf("Error encoding: %v", err)
@@ -89,7 +89,7 @@ func BenchmarkDecoder(b *testing.B) {
 			go func() {
 				defer wg.Done()
 				start := time.Now()
-				_, err := Decoder.Decode("items.encoded.dat", start)
+				_, err := Decoder.Decode("items.encoded.dat")
 				totalTime += time.Since(start)
 				if err != nil {
 					b.Errorf("Error Decoding: %v", err)

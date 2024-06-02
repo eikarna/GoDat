@@ -13,7 +13,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var (
@@ -23,7 +22,7 @@ var (
 func main() {
 	for {
 		UI.ClearScreen()
-		UI.PrintBanner(true, "GoDat", "Version: 1.0.0", "By: Eikarna")
+		UI.PrintBanner(true, "GoDat", "Version: 1.1.0", "By: Eikarna")
 		fmt.Println("Please select Method (ex. 1, or \"Decode\"):")
 		fmt.Println("1. Decode")
 		fmt.Println("2. Encode")
@@ -70,8 +69,7 @@ func handleDecode() {
 			return
 		}
 
-		now := time.Now()
-		decoded, err := Decoder.Decode(targetDecodeFile, now)
+		decoded, err := Decoder.Decode(targetDecodeFile)
 		if err != nil {
 			log.Error("Error when trying to decode \"%s\": %v", targetDecodeFile, err)
 			continue
@@ -108,7 +106,6 @@ func handleEncode() {
 			continue
 		}
 
-		now := time.Now()
 		data := &ItemInfo{}
 		err = json.Unmarshal(b, data)
 		if err != nil {
@@ -116,7 +113,7 @@ func handleEncode() {
 			continue
 		}
 
-		err = Encoder.Encode(data, outputNameFile, now)
+		err = Encoder.Encode(data, outputNameFile)
 		if err != nil {
 			log.Error("Error when trying to encode \"%s\": %v", targetEncodeFile, err)
 			continue

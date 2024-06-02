@@ -7,10 +7,9 @@ import (
 	. "github.com/eikarna/GoDat/Components/Enums"
 	"github.com/eikarna/GoDat/Components/ProtonHash"
 	"os"
-	"time"
 )
 
-func Decode(pathFile string, timestamp time.Time) (*ItemInfo, error) {
+func Decode(pathFile string) (*ItemInfo, error) {
 	if pathFile == "" {
 		return nil, errors.New("Please provide the target file!")
 	}
@@ -212,7 +211,7 @@ func Decode(pathFile string, timestamp time.Time) (*ItemInfo, error) {
 		}
 	}
 	data, err = nil, nil
-	fmt.Printf("Items.dat decoded for %s. With Item Count: %d, ItemsDatVersion: %d, Item Hash: %v\n", time.Since(timestamp), itemInfo.ItemCount, itemInfo.ItemVersion, itemInfo.FileHash)
+	// fmt.Printf("Items.dat decoded for %s. With Item Count: %d, ItemsDatVersion: %d, Item Hash: %v\n", time.Since(timestamp), itemInfo.ItemCount, itemInfo.ItemVersion, itemInfo.FileHash)
 	return itemInfo, nil
 }
 
