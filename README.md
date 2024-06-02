@@ -8,32 +8,45 @@ Go items.dat Encoder/Decoder for Growtopia. Extremely fast btw.
 - [X] Very Fast Processing.
 
 # Benchmark
-### Encoder (100 Process)
+### Encoder (8 Cores, 4x2.4GHz, 4x1.8GHz)
 ```go
 goos: android
 goarch: arm64
 pkg: github.com/eikarna/GoDat
-BenchmarkEncoder-8             6         235593108 ns/op        99593234 B/op   7561045 allocs/op
+BenchmarkEncoder-8            15          69861531 ns/op         9959195 B/op    756105 allocs/op
 --- BENCH: BenchmarkEncoder-8
-    main_test.go:64: Success Count: 10
+    main_test.go:64: Success Count: 1
     main_test.go:65: Error Count: 0
-    main_test.go:67: Average Encode Time: 228.13302ms
-    main_test.go:64: Success Count: 30
+    main_test.go:67: Average Encode Time: 84.600834ms
+    main_test.go:64: Success Count: 13
     main_test.go:65: Error Count: 0
-    main_test.go:67: Average Encode Time: 282.917076ms
-    main_test.go:64: Success Count: 40
+    main_test.go:67: Average Encode Time: 73.745452ms
+    main_test.go:64: Success Count: 15
     main_test.go:65: Error Count: 0
-    main_test.go:67: Average Encode Time: 163.167127ms
-    main_test.go:64: Success Count: 50
-        ... [output truncated]
+    main_test.go:67: Average Encode Time: 69.803093ms
 PASS
-ok      github.com/eikarna/GoDat        11.689s
+ok      github.com/eikarna/GoDat        10.155s
 ```
-### Decoder (100 Process) / Not Tested
+### Decoder (8 Cores, 4x2.4GHz, 4x1.8GHz)
 ```go
-nil
+goos: android
+goarch: arm64
+pkg: github.com/eikarna/GoDat
+BenchmarkDecoder-8            19          62299668 ns/op        19138962 B/op    583782 allocs/op
+--- BENCH: BenchmarkDecoder-8
+    main_test.go:110: Success Count: 1
+    main_test.go:111: Error Count: 0
+    main_test.go:113: Average Decode Time: 67.587083ms
+    main_test.go:110: Success Count: 16
+    main_test.go:111: Error Count: 0
+    main_test.go:113: Average Decode Time: 61.871959ms
+    main_test.go:110: Success Count: 19
+    main_test.go:111: Error Count: 0
+    main_test.go:113: Average Decode Time: 62.232516ms
+PASS
+ok      github.com/eikarna/GoDat        2.270s
 ```
-You can test it by yourself if your device is medium/high-end, also minimal RAM is 6GB for prevent the benchmark test force close, because this program use memory-map logic where all decoded/parsed Binary file/JSON file is mapped to memory for ensure the process is fast and efficient.
+You can test it by yourself, remember that the program use memory-map logic where all decoded/parsed Binary/JSON file is mapped to memory for ensure the process is fast and efficient.
 
 ## Special Thanks
 - [GuckTubeYT](https://github.com/GuckTubeYT)

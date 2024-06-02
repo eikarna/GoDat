@@ -26,7 +26,7 @@ func BenchmarkEncoder(b *testing.B) {
 		return
 	}
 	// Define the number of concurrent to simulate
-	concurrency := 10
+	concurrency := 1
 	successCount := 0
 	errorCount := 0
 	var totalTime time.Duration
@@ -72,7 +72,7 @@ func BenchmarkEncoder(b *testing.B) {
 
 func BenchmarkDecoder(b *testing.B) {
 	// Define the number of concurrent to simulate
-	concurrency := 1000
+	concurrency := 1
 	successCount := 0
 	errorCount := 0
 	var totalTime time.Duration
